@@ -15,13 +15,13 @@ def token_swapping_solver(AG, C):
     # Mapping for each time step and each qubit
     tau = [[Int(f'tau_{i}_{j}') for j in range(n)] for i in range(total_steps)]
 
-    # Initial mapping is identity
+    # Initial mapping
     for j in range(n):
         s.add(tau[0][j] == j)
 
     for t in range(0, total_steps, 2):
-        # Looping with a stride of 2 since we are accounting for potential SWAP before each CNOT
-        a, b = C[t // 2]  # Fetch the CNOT gate for this time step
+
+        a, b = C[t // 2]
 
         # Check if CNOT can be executed directly
         direct_execution = Or(And(tau[t][a] == tau[t+1][a], tau[t][b] == tau[t+1][b]), And(tau[t][a] == tau[t+1][b], tau[t][b] == tau[t+1][a]))
@@ -41,6 +41,7 @@ def token_swapping_solver(AG, C):
     return None
 
 def extract_swaps(mapping_sequence):
+    # show the swap sequence
     swaps = []
     for i in range(1, len(mapping_sequence)):
         prev_mapping = mapping_sequence[i-1]
@@ -49,7 +50,6 @@ def extract_swaps(mapping_sequence):
         if swapped:
             swaps.append(tuple(swapped))
     return swaps
-
 
 
 if __name__ == '__main__':
